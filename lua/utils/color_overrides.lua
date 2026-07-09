@@ -15,6 +15,29 @@ function M.my_line_colors()
   vim.api.nvim_set_hl(0, "LineNr", { fg = "#d6d2c8" })
 end
 
+function M.dark_af_theme_overrides()
+  local hl = vim.api.nvim_set_hl
+  hl(0, "LineNrAbove", { fg = "#646A72", bg = "#0A0B0D" })
+  hl(0, "LineNrBelow", { fg = "#646A72", bg = "#0A0B0D" })
+  hl(0, "LineNr", { fg = "#80868E" })
+  hl(0, "TSComment", { fg = "#70757C" })
+  hl(0, "Comment", { fg = "#70757C" })
+  hl(0, "Search", { fg = "#D4D9DE", bg = "#313740" })
+  hl(0, "PmenuSel", { fg = "#DEE2E6", bg = "#242A31" })
+  hl(0, "WinSeparator", { fg = "#424953", bg = "#0A0B0D" })
+  hl(0, "StatusLine", { fg = "#CCD1D7", bg = "#1D2229" })
+  hl(0, "StatusLineNC", { fg = "#7E848C", bg = "#12161B" })
+
+  -- Keep lualine aligned with dark_af even when lualine's auto theme differs.
+  hl(0, "lualine_a_normal", { fg = "#D5DAE0", bg = "#20252D", bold = true })
+  hl(0, "lualine_b_normal", { fg = "#BDC3CA", bg = "#1D2229" })
+  hl(0, "lualine_c_normal", { fg = "#CCD1D7", bg = "#16191D" })
+  hl(0, "lualine_x_normal", { fg = "#BDC3CA", bg = "#16191D" })
+  hl(0, "lualine_y_normal", { fg = "#BDC3CA", bg = "#1D2229" })
+  hl(0, "lualine_z_normal", { fg = "#D5DAE0", bg = "#20252D" })
+  hl(0, "lualine_c_inactive", { fg = "#7E848C", bg = "#12161B" })
+end
+
 function M.zenbones_theme_overrides()
   vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#888888", bg = "#1e1e1e" })
   vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#888888", bg = "#1e1e1e" })
@@ -124,7 +147,9 @@ function M.setup_colorscheme_overrides()
       if colorscheme == nil then
         return
       end
-      if string.find(colorscheme, "base16") then
+      if colorscheme == "dark_af" or colorscheme == "dark-af" or colorscheme == "custom" or colorscheme == "vimichael-custom" then
+        M.dark_af_theme_overrides()
+      elseif string.find(colorscheme, "base16") then
         if string.find(colorscheme, "metal") then
           M.black_metal_theme_overrides()
         end
@@ -153,6 +178,11 @@ end
 vim.api.nvim_create_user_command("MyLine", M.my_line_colors, {})
 vim.api.nvim_create_user_command("VagueStatus", M.vague_status_colors, {})
 vim.api.nvim_create_user_command("VagueLine", M.vague_line_colors, {})
+vim.api.nvim_create_user_command("DarkAf", function()
+  require("utils.theme").apply("dark_af")
+  require("utils.theme").save("dark_af")
+  M.dark_af_theme_overrides()
+end, {})
 vim.api.nvim_create_user_command("DefStatus", function()
   require("lualine").setup({ options = { theme = "auto" } })
 end, {})

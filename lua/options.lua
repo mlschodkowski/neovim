@@ -4,7 +4,7 @@ opt.number = true
 opt.relativenumber = true
 opt.cmdheight = 0
 opt.termguicolors = true
-opt.scrolloff = 5
+opt.scrolloff = 10
 opt.signcolumn = "no"
 opt.splitright = true
 
@@ -94,3 +94,7 @@ end, { desc = "Enable autoformat on save" })
 vim.api.nvim_create_user_command("ToggleInlineBlame", function()
   vim.cmd("Gitsigns toggle_current_line_blame")
 end, { desc = "Toggle inline git blame" })
+
+vim.api.nvim_create_user_command("ThemeDarkAf", function()
+  vim.cmd("DarkAf")
+end, { desc = "Set colorscheme to dark_af" })

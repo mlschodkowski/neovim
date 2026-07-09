@@ -16,10 +16,20 @@ require("lazynvim")
 require("autocmds")
 
 utils.color_overrides.setup_colorscheme_overrides()
-utils.theme.apply_saved_or_default("poimandres")
+utils.theme.apply_saved_or_default("dark_af")
+utils.theme.save("dark_af")
 
 utils.fix_telescope_parens_win()
 utils.dashboard.setup_dashboard_image_colors()
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    if vim.g.colors_name ~= "dark_af" then
+      vim.cmd("DarkAf")
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()

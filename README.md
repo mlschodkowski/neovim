@@ -4,7 +4,9 @@ This is a Helix-style Neovim setup with Telescope + Alpha as the main UI.
 
 ## What is enabled
 
-- Theme: `poimandres` (transparent background, follows terminal opacity)
+- Theme: `dark-af` (default, based on vimichael/my-nvim-config)
+- Theme alias names: `dark_af`, `vimichael-custom`, `custom`
+- Additional custom theme: `golden_gate` (alias: `golden-gate`, based on your Helix theme)
 - Tree-sitter: syntax + textobjects + motions
 - LSP: Mason + `nvim-lspconfig`
 - Formatting: `conform.nvim` with format-on-save
@@ -20,6 +22,7 @@ This is a Helix-style Neovim setup with Telescope + Alpha as the main UI.
 - `<leader>fF` find files (same, filtered)
 - `<leader>fg` live grep
 - `<leader>fG` live grep (same, filtered)
+- `<leader>fE` find files by extension (prompts for ext)
 - `<leader>bb` buffers
 - `<leader>fr` recent files
 - `<leader>hh` help tags
@@ -39,6 +42,9 @@ This is a Helix-style Neovim setup with Telescope + Alpha as the main UI.
 
 - `u` undo
 - `U` redo
+- `Ctrl-c` toggle comment
+- `Ctrl-,` indent left
+- `Ctrl-.` indent right
 - `x` select line down (`3x` selects 3 lines)
 - `X` select line up
 - `m` enter visual mode (Helix-like select)
@@ -51,7 +57,9 @@ This is a Helix-style Neovim setup with Telescope + Alpha as the main UI.
 - `<leader>th` horizontal terminal
 - `<leader>tv` vertical terminal
 - `<leader>e` Neo-tree toggle
-- `<leader>y` Yazi
+- `<leader>y` Yazi in cwd (updates Neovim cwd on close)
+- `<leader>yc` Yazi on buffer path
+- `<leader>cp` project picker (interactive cd)
 
 ## Toggles
 
@@ -66,8 +74,10 @@ This is a Helix-style Neovim setup with Telescope + Alpha as the main UI.
 - `:ConfigOpen` open `init.lua`
 - `:ConfigReload` reload config
 - `:OpenInObsidian` open current markdown note in Obsidian
-- `:MarkdownPreviewToggle` toggle markdown browser preview
+- `:MarkdownPreviewToggle` toggle markdown render preview
 - `:ToggleInlineBlame` toggle inline git blame
+- `:ThemeDarkAf` force `dark-af` and save it as active theme
+- `:FindFilesByExt <ext>` find files by extension (example: `lua`)
 
 ## Startup behavior
 

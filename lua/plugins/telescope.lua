@@ -140,6 +140,38 @@ return {
         })
       end
 
+      local function normalize_extension(raw)
+        if not raw then
+          return nil
+        end
+        local ext = raw:gsub("^%s+", ""):gsub("%s+$", "")
+        if ext == "" then
+          return nil
+        end
+        ext = ext:gsub("^%*?%.", "")
+        return ext ~= "" and ext or nil
+      end
+
+      local function find_files_by_extension(ext)
+        local normalized = normalize_extension(ext)
+        if not normalized then
+          vim.notify("Extension is required, example: lua", vim.log.levels.WARN)
+          return
+        end
+
+        local find_command = { "rg", "--files", "--hidden", "--glob", "*." .. normalized }
+        for _, glob in ipairs(common_ignore_globs) do
+          table.insert(find_command, "--glob")
+          table.insert(find_command, glob)
+        end
+
+        builtin.find_files({
+          prompt_title = "Find files (*." .. normalized .. ")",
+          hidden = true,
+          find_command = find_command,
+        })
+      end
+
       local function live_grep_ignored()
         builtin.live_grep({
           additional_args = function()
@@ -199,9 +231,23 @@ return {
         }))
       end
 
+      vim.api.nvim_create_user_command("FindFilesByExt", function(cmd_opts)
+        find_files_by_extension(cmd_opts.args)
+      end, {
+        nargs = 1,
+        desc = "Find files by extension (example: FindFilesByExt lua)",
+      })
+
       vim.keymap.set("n", "<leader>/", builtin.commands, { desc = "Command palette" })
       vim.keymap.set("n", "<leader>ff", find_files_ignored, { desc = "Find files (ignore common dirs)" })
       vim.keymap.set("n", "<leader>fF", find_files_ignored, { desc = "Find files (ignore common dirs)" })
+      vim.keymap.set("n", "<leader>fE", function()
+        vim.ui.input({ prompt = "Extension: " }, function(input)
+          if input then
+            find_files_by_extension(input)
+          end
+        end)
+      end, { desc = "Find files by extension" })
       vim.keymap.set("n", "<leader>fg", live_grep_ignored, { desc = "Live grep (ignore common dirs)" })
       vim.keymap.set("n", "<leader>fG", live_grep_ignored, { desc = "Live grep (ignore common dirs)" })
       vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
