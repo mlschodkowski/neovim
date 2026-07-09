@@ -71,6 +71,10 @@ return {
             prompt_position = "top",
           },
           color_devicons = false,
+          prompt_prefix = "> ",
+          selection_caret = "> ",
+          results_title = false,
+          preview_title = false,
           initial_mode = "insert",
           mappings = {
             i = {
@@ -90,9 +94,9 @@ return {
             treesitter = false,
           },
           borderchars = {
-            prompt = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-            results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
-            preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+            prompt = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+            results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+            preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
           },
         },
         extensions = {
@@ -166,7 +170,7 @@ return {
         end
 
         builtin.find_files({
-          prompt_title = "Find files (*." .. normalized .. ")",
+          prompt_title = "files *." .. normalized,
           hidden = true,
           find_command = find_command,
         })
@@ -194,7 +198,7 @@ return {
           end
         end
         builtin.live_grep({
-          prompt_title = "Help Grep",
+          prompt_title = "help grep",
           search_dirs = doc_dirs,
           glob_pattern = "*.txt",
         })
@@ -239,8 +243,8 @@ return {
       })
 
       vim.keymap.set("n", "<leader>/", builtin.commands, { desc = "Command palette" })
-      vim.keymap.set("n", "<leader>ff", find_files_ignored, { desc = "Find files (ignore common dirs)" })
-      vim.keymap.set("n", "<leader>fF", find_files_ignored, { desc = "Find files (ignore common dirs)" })
+      vim.keymap.set("n", "<leader>ff", find_files_ignored, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fF", find_files_ignored, { desc = "Find files" })
       vim.keymap.set("n", "<leader>fE", function()
         vim.ui.input({ prompt = "Extension: " }, function(input)
           if input then
@@ -248,17 +252,17 @@ return {
           end
         end)
       end, { desc = "Find files by extension" })
-      vim.keymap.set("n", "<leader>fg", live_grep_ignored, { desc = "Live grep (ignore common dirs)" })
-      vim.keymap.set("n", "<leader>fG", live_grep_ignored, { desc = "Live grep (ignore common dirs)" })
-      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
+      vim.keymap.set("n", "<leader>fg", live_grep_ignored, { desc = "Grep files" })
+      vim.keymap.set("n", "<leader>fG", live_grep_ignored, { desc = "Grep files" })
+      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Buffers" })
       vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Recent files" })
-      vim.keymap.set("n", "<leader>h/", help_live_grep, { desc = "Help grep (live)" })
+      vim.keymap.set("n", "<leader>h/", help_live_grep, { desc = "Help grep" })
       vim.keymap.set("n", "<leader>hh", builtin.help_tags, { desc = "Help tags" })
       vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Diagnostics" })
       vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Document symbols" })
       vim.keymap.set("n", "<leader>fS", builtin.lsp_workspace_symbols, { desc = "Workspace symbols" })
-      vim.keymap.set("n", "<leader>f.", builtin.builtin, { desc = "Find pickers" })
-      vim.keymap.set("n", "<leader>ft", pick_theme_with_persist, { desc = "Themes (live preview + save)" })
+      vim.keymap.set("n", "<leader>f.", builtin.builtin, { desc = "Pickers" })
+      vim.keymap.set("n", "<leader>ft", pick_theme_with_persist, { desc = "Themes" })
     end,
   },
   {

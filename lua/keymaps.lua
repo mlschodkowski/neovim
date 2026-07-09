@@ -131,7 +131,7 @@ local function goto_symbol(direction)
   vim.api.nvim_win_set_cursor(0, { last.lnum, last.col })
 end
 
--- remaps
+-- Core mappings
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
@@ -152,7 +152,7 @@ km("n", "<C-k>", "<C-w>k")
 km("n", "<C-l>", "<C-w>l")
 km("n", "<C-w>d", "<C-w>c", { desc = "Close current window" })
 
--- window manips
+-- Window size and split controls
 km("n", "=", [[<cmd>vertical resize +5<cr>]])
 km("n", "-", [[<cmd>vertical resize -5<cr>]])
 km("n", "+", [[<cmd>horizontal resize +5<cr>]])
@@ -162,7 +162,7 @@ km("n", "<leader>wh", "<cmd>split<CR>", { desc = "Horizontal split" })
 km("n", "<leader>wc", "<cmd>close<CR>", { desc = "Close window" })
 km("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
 
--- move selections
+-- Move selected lines
 km("v", "J", ":m '>+1<CR>gv=gv") -- Shift visual selected line down
 km("v", "K", ":m '<-2<CR>gv=gv") -- Shift visual selected line up
 
@@ -218,17 +218,17 @@ km("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
 km("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 km("n", "gn", "<cmd>bnext<CR>", { desc = "Go next buffer" })
 km("n", "gp", "<cmd>bprevious<CR>", { desc = "Go previous buffer" })
-km("n", "<leader>ml", "<cmd>Lazy<CR>", { desc = "Launch Lazy" })
-km("n", "<leader>mm", "<cmd>Mason<CR>", { desc = "Launch Mason" })
+km("n", "<leader>ml", "<cmd>Lazy<CR>", { desc = "Open Lazy" })
+km("n", "<leader>mm", "<cmd>Mason<CR>", { desc = "Open Mason" })
 km("n", "<leader>mu", "<cmd>MasonUpdate<CR>", { desc = "Update Mason registry" })
 km("n", "<leader>ms", "<cmd>Lazy sync<CR>", { desc = "Sync plugins" })
 
--- autocomplete in normal text
+-- Insert mode completion
 km("i", "<C-f>", "<C-x><C-f>", { noremap = true, silent = true })
 km("i", "<C-n>", "<C-x><C-n>", { noremap = true, silent = true })
 km("i", "<C-l>", "<C-x><C-l>", { noremap = true, silent = true })
 
--- spell check
+-- Toggle helpers
 km("n", "<leader>ts", "<cmd>setlocal spell! spelllang=en_us<CR>", { desc = "Toggle spellcheck" })
 km("n", "<leader>ti", "<cmd>IBLToggle<CR>", { desc = "Toggle indent guides" })
 km("n", "<leader>tr", function()
@@ -243,7 +243,7 @@ km("n", "<leader>tf", function()
 end, { desc = "Toggle autoformat" })
 km("n", "<leader>tb", "<cmd>Gitsigns toggle_current_line_blame<CR>", { desc = "Toggle inline blame" })
 
--- lsp setup
+-- LSP mappings
 km("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
 km("n", "gh", vim.lsp.buf.hover, { desc = "Hover documentation" })
 km("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
@@ -259,11 +259,11 @@ km({ "n", "v" }, "gra", vim.lsp.buf.code_action, { desc = "LSP code actions" })
 km({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, { desc = "Code action" })
 km("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 
--- see error
+-- Diagnostics helpers
 km("n", "<leader>de", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 km("n", "<leader>dq", vim.diagnostic.setqflist, { desc = "Diagnostics to quickfix" })
 
--- go to next/prev targets
+-- Next/previous navigation targets
 km("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 km("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 km("n", "[s", function()

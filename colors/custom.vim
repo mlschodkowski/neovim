@@ -1,2 +1,2 @@
-" Compatibility alias kept for old saved theme names.
-runtime colors/dark-af.vim
+" Alias for older saved theme names.
+runtime colors/dark_af.vim

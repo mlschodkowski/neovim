@@ -134,7 +134,7 @@ return {
     end)
 
     wk.add({
-      { "<C-w>", group = "Windows" },
+      { "<C-w>", group = "windows" },
       { "<C-w>w", desc = "Next window" },
       { "<C-w>h", desc = "Focus left window" },
       { "<C-w>j", desc = "Focus lower window" },
@@ -145,7 +145,7 @@ return {
       { "<C-w>s", desc = "Split window horizontally" },
       { "<C-w>v", desc = "Split window vertically" },
       { "<C-w>=", desc = "Balance window sizes" },
-      { "z", group = "View/Folds" },
+      { "z", group = "view/folds" },
       { "za", desc = "Toggle fold" },
       { "zc", desc = "Close fold" },
       { "zo", desc = "Open fold" },
@@ -154,19 +154,20 @@ return {
       { "zz", desc = "Center cursor line" },
       { "zt", desc = "Cursor line to top" },
       { "zb", desc = "Cursor line to bottom" },
-      { "g", group = "Goto" },
-      { "gr", group = "LSP" },
-      { "<leader>b", group = "Buffer" },
-      { "<leader>f", group = "Find" },
-      { "<leader>h", group = "Help" },
-      { "<leader>m", group = "Manage" },
-      { "<leader>e", group = "Explorer" },
-      { "<leader>y", group = "Yazi" },
-      { "<leader>w", group = "Window" },
-      { "<leader>d", group = "Diagnostics" },
-      { "<leader>g", group = "Git" },
-      { "<leader>t", group = "Toggle" },
-      { "<leader>r", group = "Refactor" },
+      { "g", group = "goto" },
+      { "gr", group = "lsp" },
+      { "<leader>b", group = "buffer" },
+      { "<leader>f", group = "find" },
+      { "<leader>h", group = "help" },
+      { "<leader>j", group = "jump" },
+      { "<leader>m", group = "manage" },
+      { "<leader>e", group = "explorer" },
+      { "<leader>y", group = "yazi" },
+      { "<leader>w", group = "window" },
+      { "<leader>d", group = "diagnostics" },
+      { "<leader>g", group = "git" },
+      { "<leader>t", group = "toggle" },
+      { "<leader>r", group = "refactor" },
     })
   end,
   keys = {
@@ -185,7 +186,7 @@ return {
       function()
         require("which-key").show({ global = true })
       end,
-      desc = "Keymap groups",
+      desc = "Key groups",
     },
     {
       "<leader>:",
