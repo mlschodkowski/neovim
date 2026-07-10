@@ -284,6 +284,7 @@ Installed theme plugins:
 - `monokai-quiet` (custom muted green variant)
 - `doom-one`
 - `doom-one-darker` (custom wrapper)
+- `oxocarbon-muted` (custom wrapper)
 
 Theme persistence:
 

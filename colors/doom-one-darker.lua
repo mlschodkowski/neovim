@@ -3,12 +3,12 @@ vim.g.doom_one_terminal_colors = true
 vim.g.doom_one_italic_comments = false
 vim.g.doom_one_enable_treesitter = true
 vim.g.doom_one_diagnostics_text_color = false
-vim.g.doom_one_transparent_background = false
+-- Let Ghostty render the editor surface, including its configured opacity.
+vim.g.doom_one_transparent_background = true
 vim.g.doom_one_pumblend_enable = false
 vim.g.doom_one_pumblend_transparency = 20
 
 local original_colors = require("doom-one.colors")
-local utils = require("doom-one.utils")
 package.loaded["doom-one.colors"] = {
   get_palette = function(current_bg)
     local palette = original_colors.get_palette(current_bg)
@@ -16,37 +16,34 @@ package.loaded["doom-one.colors"] = {
       return palette
     end
 
-    local bg = "#191526"
-    local function mute(color, amount)
-      return utils.mix(color, bg, amount)
-    end
-
     return {
-      bg = bg,
-      fg = "#d8cfea",
-      bg_alt = "#141121",
-      fg_alt = "#81739f",
-      base0 = "#100d19",
-      base1 = "#151126",
-      base2 = "#191526",
-      base3 = "#241b38",
-      base4 = "#3d2e5c",
-      base5 = "#604c86",
-      base6 = "#8870ad",
-      base7 = "#ad91cf",
-      base8 = "#e5d9f2",
-      grey = "#4f3b75",
-      red = mute(palette.red, 0.14),
-      orange = mute(palette.orange, 0.14),
-      green = mute(palette.green, 0.14),
-      teal = mute(palette.teal, 0.14),
-      yellow = mute(palette.yellow, 0.14),
-      blue = mute(palette.blue, 0.12),
-      dark_blue = "#3d4f9a",
-      magenta = mute(palette.magenta, 0.14),
-      violet = mute(palette.violet, 0.14),
-      cyan = mute(palette.cyan, 0.14),
-      dark_cyan = mute(palette.dark_cyan, 0.14),
+      -- Match Ghostty's Doom One Darker surfaces while retaining Doom One's
+      -- native syntax colors and contrast relationships.
+      bg = "#171b2b",
+      fg = "#d8dcf0",
+      bg_alt = "#222943",
+      fg_alt = "#8f9bc4",
+      base0 = "#111525",
+      base1 = "#171b2b",
+      base2 = "#1c2235",
+      base3 = "#252d49",
+      base4 = "#39466f",
+      base5 = "#5c6b9b",
+      base6 = "#7d8bc0",
+      base7 = "#aab5e0",
+      base8 = "#e1e5ff",
+      grey = "#39466f",
+      red = palette.red,
+      orange = palette.orange,
+      green = palette.green,
+      teal = palette.teal,
+      yellow = palette.yellow,
+      blue = palette.blue,
+      dark_blue = palette.dark_blue,
+      magenta = palette.magenta,
+      violet = palette.violet,
+      cyan = palette.cyan,
+      dark_cyan = palette.dark_cyan,
     }
   end,
 }

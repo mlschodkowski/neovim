@@ -145,7 +145,7 @@ return {
         end
 
         vim.schedule(function()
-          vim.cmd.edit(vim.fn.fnameescape(entry.path or entry.value))
+          vim.cmd("edit " .. vim.fn.fnameescape(entry.path or entry.value))
         end)
       end
 
@@ -661,7 +661,23 @@ return {
         local function preview_selection()
           local entry = action_state.get_selected_entry()
           if entry and entry.value then
-            pcall(vim.cmd.colorscheme, entry.value)
+            local ok = pcall(vim.cmd.colorscheme, entry.value)
+            if ok then
+              local transparent = entry.value:match("^github_")
+                or entry.value:match("^rose%-pine")
+                or entry.value == "oxocarbon-muted"
+              for _, group in ipairs({
+                "TelescopeNormal",
+                "TelescopePreviewNormal",
+                "TelescopeResultsNormal",
+              }) do
+                vim.api.nvim_set_hl(0, group, transparent and { bg = "NONE" } or {})
+              end
+              vim.api.nvim_buf_call(0, function()
+                vim.cmd("silent! syntax sync fromstart")
+              end)
+              vim.cmd("redraw!")
+            end
           end
         end
 

@@ -10,7 +10,16 @@ return {
 		end,
 	},
 	{ "loctvl842/monokai-pro.nvim", lazy = false, priority = 1000 },
-	{ "NTBBloodbath/doom-one.nvim", lazy = false, priority = 1000 },
+	{
+		"NTBBloodbath/doom-one.nvim",
+		lazy = false,
+		priority = 1000,
+		init = function()
+			-- Both Doom One variants leave the editor canvas to Ghostty, whose
+			-- background opacity and blur provide the actual surface.
+			vim.g.doom_one_transparent_background = true
+		end,
+	},
 	{ "yazeed1s/oh-lucy.nvim", lazy = false, priority = 1000 },
 	{ "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
 	{ "folke/tokyonight.nvim", lazy = false, priority = 1000 },
@@ -19,7 +28,18 @@ return {
 	{ "gbprod/nord.nvim", lazy = false, priority = 1000 },
 	{ "scottmckendry/cyberdream.nvim", lazy = false, priority = 1000 },
 	{ "sainnhe/everforest", lazy = false, priority = 1000 },
-	{ "rose-pine/neovim", name = "rose-pine", lazy = false, priority = 1000 },
+	{
+		"rose-pine/neovim",
+		name = "rose-pine",
+		lazy = false,
+		priority = 1000,
+		opts = {
+			styles = {
+				italic = false,
+			},
+			disable_background = true,
+		},
+	},
 	{ "Mofiqul/vscode.nvim", lazy = false, priority = 1000 },
 	{ "olimorris/onedarkpro.nvim", lazy = false, priority = 1000 },
 	{ "Mofiqul/dracula.nvim", lazy = false, priority = 1000 },
@@ -27,7 +47,18 @@ return {
 	{ "bluz71/vim-moonfly-colors", lazy = false, priority = 1000 },
 	{ "craftzdog/solarized-osaka.nvim", lazy = false, priority = 1000 },
 	{ "olivercederborg/poimandres.nvim", lazy = false, priority = 1000 },
-	{ "projekt0n/github-nvim-theme", lazy = false, priority = 1000 },
+	{
+		"projekt0n/github-nvim-theme",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("github-theme").setup({
+				options = {
+					transparent = true,
+				},
+			})
+		end,
+	},
 	{ "marko-cerovac/material.nvim", lazy = false, priority = 1000 },
 	{ "nyoom-engineering/oxocarbon.nvim", lazy = false, priority = 1000 },
 	{ "oskarnurm/koda.nvim", lazy = false, priority = 1000 },
