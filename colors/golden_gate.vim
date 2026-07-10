@@ -7,8 +7,11 @@ endif
 
 let g:colors_name = "golden_gate"
 
-highlight Normal        gui=NONE guifg=#c4b5aa guibg=#161414
-highlight NormalFloat   gui=NONE guifg=#c4b5aa guibg=#121010
+highlight Normal        gui=NONE guifg=#c4b5aa guibg=NONE ctermbg=NONE
+highlight NormalFloat   gui=NONE guifg=#c4b5aa guibg=NONE ctermbg=NONE
+highlight NormalNC      gui=NONE guifg=#c4b5aa guibg=NONE ctermbg=NONE
+highlight EndOfBuffer   gui=NONE guifg=#5c504a guibg=NONE ctermbg=NONE
+highlight SignColumn    gui=NONE guifg=#5c504a guibg=NONE ctermbg=NONE
 highlight Comment       gui=italic guifg=#5c504a
 highlight TSComment     gui=italic guifg=#5c504a
 highlight Conceal       gui=NONE guifg=#5c504a guibg=#121010

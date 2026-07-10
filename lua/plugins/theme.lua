@@ -1,11 +1,14 @@
 return {
 	{
-		"oskarnurm/koda.nvim",
+		"slugbyte/lackluster.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {
-			disable_background = true,
-			disable_float_background = true,
-		},
+		init = function()
+			vim.cmd.colorscheme("lackluster")
+			-- vim.cmd.colorscheme("lackluster-hack") -- my favorite
+			-- vim.cmd.colorscheme("lackluster-mint")
+		end,
 	},
+	{ "loctvl842/monokai-pro.nvim", lazy = false, priority = 1000 },
+	{ "NTBBloodbath/doom-one.nvim", lazy = false, priority = 1000 },
 }

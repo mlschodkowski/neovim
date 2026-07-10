@@ -57,7 +57,7 @@ return {
       type = "text",
       val = {
         ("cwd: %s"):format(vim.fn.fnamemodify(vim.fn.getcwd(), ":~")),
-        ("branch: %s  theme: %s"):format(get_branch(), vim.g.colors_name or "dark_af"),
+        ("branch: %s"):format(get_branch()),
       },
       opts = {
         position = "center",

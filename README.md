@@ -34,7 +34,7 @@ This config is a simplified, action-first setup with:
 ## Alpha dashboard
 
 - Sections: `WORK`, `GIT`, `TOOLS`
-- Context row: cwd + git branch + theme
+- Context row: cwd + git branch
 - Recents block: top 5 oldfiles
 - Footer: `startup: <ms> | plugins: <count>`
 - Header art: Penrose-style ASCII block
@@ -49,7 +49,7 @@ Dashboard actions:
 - `[b]` git branches
 - `[y]` yazi
 - `[l]` lazy
-- `[j]` marks (Harpoon quick menu)
+- `[j]` marks (Harpoon Telescope list with preview)
 - `[q]` quit
 
 ## Telescope
@@ -73,16 +73,18 @@ Dashboard actions:
 - Per-project key scope based on cwd (`settings.key = vim.loop.cwd()`)
 - Keymaps:
   - `<leader>js` add current file to jump list
-  - `<leader>jj` open jump list menu
+  - `<leader>jj` open jump list menu (Telescope preview)
+  - `<leader>jJ` open Harpoon quick menu
   - `<leader>j1..4` jump to slot 1..4
   - `<leader>jn` next jump
   - `<leader>jp` previous jump
-- User command: `:HarpoonQuickMenu`
+- User command: `:HarpoonQuickMenu` (Telescope preview list)
 
 ## Core plugins
 
 - UI: `alpha-nvim`, `telescope.nvim`, `which-key.nvim`, `lualine.nvim`, `bufferline.nvim`
 - Navigation: `harpoon` (harpoon2), `project.nvim`, `neo-tree.nvim`, `yazi.nvim`, `toggleterm.nvim`
+- Multi-cursor: `vim-visual-multi`
 - Code: `nvim-treesitter`, `nvim-lspconfig`, `mason.nvim`, `mason-lspconfig.nvim`, `blink.cmp`, `LuaSnip`
 - Editing: `conform.nvim`, `Comment.nvim`, `gitsigns.nvim`, `indent-blankline.nvim`
 - Markdown: `render-markdown.nvim`
@@ -121,7 +123,7 @@ Tree-sitter installs:
 
 Format engine: `conform.nvim`
 
-- `<leader>fm`: format current buffer
+- `<leader>rf`: format current buffer
 - format-on-save is enabled unless disabled
 - toggle with:
   - `<leader>tf`
@@ -155,10 +157,14 @@ Leader is `<Space>`.
 - `<leader>fd` diagnostics picker
 - `<leader>fs` document symbols picker
 - `<leader>fS` workspace symbols picker
+- `<leader>fk` document symbols picker (type filter)
+- `<leader>fK` workspace symbols picker (type filter)
 - `<leader>f.` picker list
 - `<leader>ft` theme picker
 - `<leader>hh` help tags
 - `<leader>h/` help grep
+
+Type-filter prompt accepts comma-separated kinds, e.g. `function,method,variable` (`var` also works).
 
 ### Helix-style next/previous targets
 
@@ -176,24 +182,35 @@ Leader is `<Space>`.
 ### Editing and selection
 
 - `u` undo, `U` redo
+- `<C-s>` save current position to jumplist
+- `<leader>jm` save current position to jumplist (fallback if terminal eats `<C-s>`)
+- `<C-o>` / `<C-i>` jump back/forward in jumplist
+- `%` select whole buffer
+- `s` Helix-style symbol/syntax selection
+- `;` collapse/remove current selection
 - `m` enter visual select mode
-- `x` / `X` grow selection down/up
+- `v` / `V` select lines down/up; repeat to extend
+- `x` / `X` delete character under/before cursor
 - `R` replace selection with active register
 - `<C-c>` toggle comment (normal/visual)
-- `<C-,>` indent left, `<C-.>` indent right
+- `S-<` indent left, `S->` indent right (literal `<` / `>` keys)
 - visual move lines: `J`, `K`, `<A-j>`, `<A-k>`
+- `<C-n>` add next occurrence as multi-cursor selection
 
 ### LSP
 
 - `K` / `gh` hover
-- `gd` definition
-- `gD` declaration
+- `gd` definition (Telescope + jumplist)
+- `gD` declaration (Telescope + jumplist)
 - `gO` document symbols
-- `gr`, `grr` references
-- `gi`, `gri` implementations
+- `gr`, `grr` references (Telescope + jumplist)
+- `gi`, `gri` implementations (Telescope + jumplist)
 - `grn` rename
-- `gra` and `<leader>a` code actions
-- `<leader>rn` rename symbol
+- `gra` code actions
+- `<leader>ra` code action
+- `<leader>rr` rename symbol
+- `<leader>rf` format buffer
+- `<leader>dh` hover docs under cursor
 
 ### Buffers and windows
 
@@ -205,34 +222,43 @@ Leader is `<Space>`.
 
 ### Terminal, tree, yazi, project
 
-- terminal: `<leader>tt`, `<leader>th`, `<leader>tv`, `<A-i>`
+- terminal: `<leader>tt`, `<leader>th`, `<A-i>`
 - tree: `<leader>e`, `<leader>fe`
-- yazi: `<leader>y`, `<leader>fy`, `<leader>yc`
+- yazi: `<leader>y`/`<leader>fy` toggle in cwd, `<leader>yc` open at buffer path
 - projects: `<leader>cp`
 
 ### Toggles
 
 - `<leader>tf` autoformat
 - `<leader>tb` inline git blame
+- `<leader>td` inline diagnostics
 - `<leader>ti` indent guides
 - `<leader>tr` relative numbers
 - `<leader>ts` spellcheck
+
+### Diagnostics
+
+- `<leader>de` line diagnostics
+- `<leader>dc` cursor diagnostics
+- `<leader>dq` diagnostics to quickfix
 
 ## User commands
 
 - `:ConfigOpen`
 - `:ConfigReload`
 - `:Setwd`
-- `:OpenInObsidian`
+- `:CursorDiagnostics`
+- `:HoverDoc`
 - `:FindFilesByExt <ext>`
 - `:MarkdownPreviewToggle`
 - `:MarkdownPreview`
 - `:MarkdownPreviewStop`
 - `:ToggleInlineBlame`
+- `:ToggleInlineDiagnostics`
 - `:ThemeDarkAf`
 - `:FormatDisable`
 - `:FormatEnable`
-- `:HarpoonQuickMenu`
+- `:HarpoonQuickMenu` (Harpoon Telescope list with preview)
 
 ## Themes
 
@@ -243,6 +269,21 @@ Theme files in `colors/`:
 - alias: `golden-gate.vim` -> `golden_gate.vim`
 - alias: `custom.vim` -> `dark_af.vim`
 - alias: `vimichael-custom.vim` -> `dark_af.vim`
+
+Installed theme plugins:
+
+- `lackluster`
+- `koda`
+- `kanagawa`
+- `catppuccin`
+- `rose-pine`
+- `zenbones`
+- `embark`
+- `oxocarbon`
+- `monokai-pro`
+- `monokai-quiet` (custom muted green variant)
+- `doom-one`
+- `doom-one-darker` (custom wrapper)
 
 Theme persistence:
 

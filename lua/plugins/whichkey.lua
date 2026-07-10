@@ -172,13 +172,6 @@ return {
   end,
   keys = {
     {
-      "<leader>?",
-      function()
-        require("telescope.builtin").commands()
-      end,
-      desc = "Command palette",
-    },
-    {
       "<leader>K",
       function()
         require("which-key").show({ global = true })

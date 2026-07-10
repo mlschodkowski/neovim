@@ -14,7 +14,6 @@ return {
   keys = {
     { "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle floating terminal" },
     { "<leader>th", "<cmd>ToggleTerm direction=horizontal size=14<CR>", desc = "Toggle horizontal terminal" },
-    { "<leader>tv", "<cmd>ToggleTerm direction=vertical size=45<CR>", desc = "Toggle vertical terminal" },
     { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle floating terminal" },
     { "<Esc>", "<C-\\><C-n>", mode = "t", desc = "Exit terminal mode" },
   },
