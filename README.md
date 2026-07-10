@@ -143,7 +143,7 @@ Leader is `<Space>`.
 
 ### Search and help
 
-- `<leader>/` command palette
+- `<leader>/` live grep
 - `<leader>?` keymap search
 - `<leader>K` key groups
 - `<leader>:` command history

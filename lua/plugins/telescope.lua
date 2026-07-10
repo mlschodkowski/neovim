@@ -242,7 +242,7 @@ return {
         desc = "Find files by extension (example: FindFilesByExt lua)",
       })
 
-      vim.keymap.set("n", "<leader>/", builtin.commands, { desc = "Command palette" })
+      vim.keymap.set("n", "<leader>/", live_grep_ignored, { desc = "Live grep" })
       vim.keymap.set("n", "<leader>ff", find_files_ignored, { desc = "Find files" })
       vim.keymap.set("n", "<leader>fF", find_files_ignored, { desc = "Find files" })
       vim.keymap.set("n", "<leader>fE", function()
