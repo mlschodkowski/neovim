@@ -79,6 +79,7 @@ return {
           mappings = {
             i = {
               ["<Esc>"] = actions.close,
+              ["<C-c>"] = actions.close,
               ["<C-r>"] = function()
                 require("which-key").show({
                   keys = "<C-r>",
@@ -88,6 +89,7 @@ return {
             },
             n = {
               ["<Esc>"] = actions.close,
+              ["<C-c>"] = actions.close,
             },
           },
           preview = {
@@ -135,6 +137,28 @@ return {
         "!target/*",
       }
 
+      local function open_selected_file(prompt_bufnr)
+        local entry = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        if not entry or not entry.value then
+          return
+        end
+
+        vim.schedule(function()
+          vim.cmd.edit(vim.fn.fnameescape(entry.path or entry.value))
+        end)
+      end
+
+      local function open_files_in_buffer()
+        return function(_, map)
+          map("i", "<Esc>", actions.close)
+          map("n", "<Esc>", actions.close)
+          map("i", "<CR>", open_selected_file)
+          map("n", "<CR>", open_selected_file)
+          return true
+        end
+      end
+
       local function find_files_ignored()
         local find_command = { "rg", "--files", "--hidden" }
         for _, glob in ipairs(common_ignore_globs) do
@@ -144,6 +168,7 @@ return {
         builtin.find_files({
           hidden = true,
           find_command = find_command,
+          attach_mappings = open_files_in_buffer(),
         })
       end
 
@@ -176,11 +201,13 @@ return {
           prompt_title = "files *." .. normalized,
           hidden = true,
           find_command = find_command,
+          attach_mappings = open_files_in_buffer(),
         })
       end
 
       local function live_grep_ignored()
         builtin.live_grep({
+          attach_mappings = open_files_in_buffer(),
           additional_args = function()
             local args = {}
             for _, glob in ipairs(common_ignore_globs) do
