@@ -174,12 +174,9 @@ return {
     {
       "<leader>?",
       function()
-        require("telescope.builtin").keymaps({
-          show_plug = false,
-          modes = { "n", "x", "i", "t" },
-        })
+        require("telescope.builtin").commands()
       end,
-      desc = "Keymap search",
+      desc = "Command palette",
     },
     {
       "<leader>K",

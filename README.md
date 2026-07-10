@@ -144,7 +144,7 @@ Leader is `<Space>`.
 ### Search and help
 
 - `<leader>/` live grep
-- `<leader>?` keymap search
+- `<leader>?` command palette
 - `<leader>K` key groups
 - `<leader>:` command history
 - `<leader>ff` / `<leader>fF` find files
