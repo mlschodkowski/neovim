@@ -36,7 +36,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.cmd.cd(arg)
     vim.cmd.enew()
     vim.schedule(function()
-      require("telescope.builtin").find_files({ cwd = arg })
+      require("telescope.builtin").find_files({
+        cwd = arg,
+        previewer = false,
+      })
     end)
   end,
 })
