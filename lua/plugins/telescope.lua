@@ -582,86 +582,22 @@ return {
       end
 
       local function pick_theme_with_persist()
-        local side_layout = telescope_themes.get_dropdown({
-          previewer = false,
-          winblend = 0,
-          layout_strategy = "vertical",
-          layout_config = {
-            width = 0.45,
-            height = 0.75,
-            prompt_position = "top",
-            preview_cutoff = 1,
-          },
-        })
-
-        local function is_dark_theme(name)
-          local lower = name:lower()
-          return not (
-            lower:match("light")
-            or lower:match("latte")
-            or lower:match("dawn")
-            or lower:match("day")
-            or lower:match("lotus")
-            or lower:match("white")
-            or lower:match("morning")
-          )
-        end
-
-        local color_set = {}
-        for _, color in ipairs(vim.fn.getcompletion("", "color")) do
-          color_set[color] = true
-        end
-        for _, path in ipairs(vim.api.nvim_get_runtime_file("colors/*.vim", true)) do
-          local color = vim.fn.fnamemodify(path, ":t:r")
-          color_set[color] = true
-        end
-        local colors = {}
-        for color in pairs(color_set) do
-          if is_dark_theme(color) then
-            table.insert(colors, color)
-          end
-        end
+        local colors = vim.fn.getcompletion("", "color")
         table.sort(colors)
 
         local before_background = vim.o.background
         local before_color = vim.g.colors_name
         local need_restore = true
-        local previewers = require("telescope.previewers")
-        local buffer_path = vim.api.nvim_buf_get_name(0)
-        local previewer = previewers.new_buffer_previewer({
-          get_buffer_by_name = function()
-            return buffer_path
-          end,
-          define_preview = function(self)
-            if buffer_path ~= "" and vim.loop.fs_stat(buffer_path) then
-              require("telescope.config").values.buffer_previewer_maker(
-                buffer_path,
-                self.state.bufnr,
-                { bufname = self.state.bufname }
-              )
-            else
-              local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-              vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, lines)
-            end
-          end,
-        })
 
         local function apply_theme(name)
-          local ok = pcall(vim.cmd.colorscheme, name)
-          if ok then
-            local transparent = name:match("^github_")
-              or name:match("^rose%-pine")
-              or name == "oxocarbon-muted"
-            for _, group in ipairs({
-              "TelescopeNormal",
-              "TelescopePreviewNormal",
-              "TelescopeResultsNormal",
-            }) do
-              vim.api.nvim_set_hl(0, group, transparent and { bg = "NONE" } or {})
-            end
-            vim.cmd("redraw!")
+          vim.o.background = "dark"
+          vim.cmd("hi clear")
+          vim.cmd("syntax reset")
+          local ok, err = pcall(vim.cmd.colorscheme, name)
+          if not ok then
+            vim.notify("colorscheme '" .. name .. "' failed: " .. tostring(err), vim.log.levels.WARN)
           end
-          return ok
+          vim.cmd("redraw!")
         end
 
         local function preview_selection()
@@ -671,45 +607,57 @@ return {
           end
         end
 
-        local preview_selection_scheduled = vim.schedule_wrap(preview_selection)
-
         require("telescope.pickers")
-          .new(vim.tbl_deep_extend("force", {}, side_layout), {
-            prompt_title = "Dark colorschemes",
+          .new(telescope_themes.get_dropdown({ previewer = false, layout_config = { width = 0.45, height = 0.75 } }), {
+            prompt_title = "Colorschemes",
             finder = require("telescope.finders").new_table({
               results = colors,
               entry_maker = make_entry.gen_from_string({}),
             }),
             sorter = sorters.get_generic_fuzzy_sorter({}),
-            previewer = previewer,
-            on_complete = {
-              preview_selection,
-            },
-            attach_mappings = function(prompt_bufnr)
-              actions.move_selection_next:enhance({
-                post = preview_selection_scheduled,
-              })
-              actions.move_selection_previous:enhance({
-                post = preview_selection_scheduled,
-              })
-              actions.select_default:replace(function()
+            on_complete = { preview_selection },
+            attach_mappings = function(prompt_bufnr, map)
+              local function restore_and_close()
+                actions.close(prompt_bufnr)
+                if need_restore and before_color then
+                  vim.o.background = before_background
+                  pcall(vim.cmd.colorscheme, before_color)
+                end
+              end
+
+              local function confirm()
                 local entry = action_state.get_selected_entry()
+                need_restore = false
                 actions.close(prompt_bufnr)
                 if entry and entry.value then
-                  if apply_theme(entry.value) then
-                    need_restore = false
-                    theme.save(entry.value)
-                  end
+                  apply_theme(entry.value)
+                  theme.save(entry.value)
                 end
-              end)
-              actions.close:enhance({
-                post = function()
-                  if need_restore and before_color then
-                    vim.o.background = before_background
-                    pcall(vim.cmd.colorscheme, before_color)
-                  end
-                end,
-              })
+              end
+
+              local function move_next()
+                actions.move_selection_next(prompt_bufnr)
+                preview_selection()
+              end
+
+              local function move_prev()
+                actions.move_selection_previous(prompt_bufnr)
+                preview_selection()
+              end
+
+              map("i", "<CR>", confirm)
+              map("n", "<CR>", confirm)
+              map("i", "<Esc>", restore_and_close)
+              map("n", "<Esc>", restore_and_close)
+              map("i", "<C-c>", restore_and_close)
+              map("i", "<C-n>", move_next)
+              map("i", "<Down>", move_next)
+              map("n", "j", move_next)
+              map("n", "<Down>", move_next)
+              map("i", "<C-p>", move_prev)
+              map("i", "<Up>", move_prev)
+              map("n", "k", move_prev)
+              map("n", "<Up>", move_prev)
               return true
             end,
           })
