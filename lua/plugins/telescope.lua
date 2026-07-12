@@ -646,28 +646,32 @@ return {
           end,
         })
 
+        local function apply_theme(name)
+          local ok = pcall(vim.cmd.colorscheme, name)
+          if ok then
+            local transparent = name:match("^github_")
+              or name:match("^rose%-pine")
+              or name == "oxocarbon-muted"
+            for _, group in ipairs({
+              "TelescopeNormal",
+              "TelescopePreviewNormal",
+              "TelescopeResultsNormal",
+            }) do
+              vim.api.nvim_set_hl(0, group, transparent and { bg = "NONE" } or {})
+            end
+            vim.cmd("redraw!")
+          end
+          return ok
+        end
+
         local function preview_selection()
           local entry = action_state.get_selected_entry()
           if entry and entry.value then
-            local ok = pcall(vim.cmd.colorscheme, entry.value)
-            if ok then
-              local transparent = entry.value:match("^github_")
-                or entry.value:match("^rose%-pine")
-                or entry.value == "oxocarbon-muted"
-              for _, group in ipairs({
-                "TelescopeNormal",
-                "TelescopePreviewNormal",
-                "TelescopeResultsNormal",
-              }) do
-                vim.api.nvim_set_hl(0, group, transparent and { bg = "NONE" } or {})
-              end
-              vim.api.nvim_buf_call(0, function()
-                vim.cmd("silent! syntax sync fromstart")
-              end)
-              vim.cmd("redraw!")
-            end
+            apply_theme(entry.value)
           end
         end
+
+        local preview_selection_scheduled = vim.schedule_wrap(preview_selection)
 
         require("telescope.pickers")
           .new(vim.tbl_deep_extend("force", {}, side_layout), {
@@ -683,17 +687,16 @@ return {
             },
             attach_mappings = function(prompt_bufnr)
               actions.move_selection_next:enhance({
-                post = preview_selection,
+                post = preview_selection_scheduled,
               })
               actions.move_selection_previous:enhance({
-                post = preview_selection,
+                post = preview_selection_scheduled,
               })
               actions.select_default:replace(function()
                 local entry = action_state.get_selected_entry()
                 actions.close(prompt_bufnr)
                 if entry and entry.value then
-                  local ok = pcall(vim.cmd.colorscheme, entry.value)
-                  if ok then
+                  if apply_theme(entry.value) then
                     need_restore = false
                     theme.save(entry.value)
                   end
