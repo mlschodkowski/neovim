@@ -398,10 +398,6 @@ km("x", "R", replace_selection_with_register, { desc = "Replace selection with r
 -- Helix-like line selection growth
 km("n", "x", "x", { desc = "Delete character" })
 km("n", "X", "X", { desc = "Delete character before cursor" })
-km("n", "v", select_lines_down, { desc = "Select lines down" })
-km("n", "V", select_lines_up, { desc = "Select lines up" })
-km("x", "v", "j", { desc = "Extend line selection down" })
-km("x", "V", "k", { desc = "Extend line selection up" })
 km("x", "x", "j", { desc = "Extend selection down" })
 km("x", "X", "k", { desc = "Extend selection up" })
 km("x", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
