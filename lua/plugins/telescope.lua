@@ -137,24 +137,12 @@ return {
         "!target/*",
       }
 
-      local function open_selected_file(prompt_bufnr)
-        local entry = action_state.get_selected_entry()
-        actions.close(prompt_bufnr)
-        if not entry or not entry.value then
-          return
-        end
-
-        vim.schedule(function()
-          vim.cmd("edit " .. vim.fn.fnameescape(entry.path or entry.value))
-        end)
-      end
-
       local function open_files_in_buffer()
         return function(_, map)
           map("i", "<Esc>", actions.close)
           map("n", "<Esc>", actions.close)
-          map("i", "<CR>", open_selected_file)
-          map("n", "<CR>", open_selected_file)
+          map("i", "<CR>", actions.select_default)
+          map("n", "<CR>", actions.select_default)
           return true
         end
       end
