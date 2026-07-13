@@ -35,7 +35,6 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp", "williamboman/mason-lspconfig.nvim" },
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       local servers = {
@@ -64,10 +63,11 @@ return {
 
       for server_name, server_opts in pairs(servers) do
         server_opts.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server_opts.capabilities or {})
-        lspconfig[server_name].setup(server_opts)
+        vim.lsp.config(server_name, server_opts)
+        vim.lsp.enable(server_name)
       end
 
-      lspconfig.emmet_ls.setup({
+      vim.lsp.config("emmet_ls", {
         capabilities = capabilities,
         single_file_support = true,
         filetypes = {
@@ -81,6 +81,7 @@ return {
           "typescriptreact",
         },
       })
+      vim.lsp.enable("emmet_ls")
     end,
   },
 }

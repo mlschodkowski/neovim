@@ -137,6 +137,14 @@ return {
         "!target/*",
       }
 
+      local function project_root()
+        local ok, root = pcall(vim.fs.root, 0, { ".git" })
+        if ok and root then
+          return root
+        end
+        return vim.uv.cwd() or vim.fn.getcwd()
+      end
+
       local function open_files_in_buffer()
         return function(_, map)
           map("i", "<Esc>", actions.close)
@@ -154,6 +162,7 @@ return {
           table.insert(find_command, glob)
         end
         builtin.find_files({
+          cwd = project_root(),
           hidden = true,
           find_command = find_command,
           attach_mappings = open_files_in_buffer(),
@@ -186,6 +195,7 @@ return {
         end
 
         builtin.find_files({
+          cwd = project_root(),
           prompt_title = "files *." .. normalized,
           hidden = true,
           find_command = find_command,
@@ -195,6 +205,7 @@ return {
 
       local function live_grep_ignored()
         builtin.live_grep({
+          cwd = project_root(),
           attach_mappings = open_files_in_buffer(),
           additional_args = function()
             local args = {}
@@ -216,7 +227,7 @@ return {
           end
         end
         builtin.live_grep({
-          prompt_title = "help grep",
+          prompt_title = "Help: Neovim and plugins",
           search_dirs = doc_dirs,
           glob_pattern = "*.txt",
         })
@@ -227,10 +238,15 @@ return {
         local seen = {}
         local entries = {}
 
-        local function is_leader_map(lhs)
-          if not lhs or lhs == "" then
+        local function is_action_map(map)
+          local lhs = map.lhs
+          if not lhs or lhs == "" or not map.desc or map.desc == "" then
             return false
           end
+          return map.mode == "n"
+        end
+
+        local function is_leader_map(lhs)
           local lower = lhs:lower()
           if lower:find("^<leader>") then
             return true
@@ -323,13 +339,13 @@ return {
         local function add_maps(maps)
           for _, map in ipairs(maps or {}) do
             local lhs = map.lhs or ""
-            if is_leader_map(lhs) then
-              local key = table.concat({ map.mode or "n", lhs, map.rhs or "", map.desc or "" }, "\0")
+            if is_action_map(map) then
+              local command = command_text(map)
+              local description = map.desc or command
+              local key = table.concat({ map.mode or "n", description, command }, "\0")
               if not seen[key] then
                 seen[key] = true
-                local command = command_text(map)
                 local keybinding = display_lhs(lhs)
-                local description = map.desc or ""
                 table.insert(entries, {
                   kind = "mapping",
                   lhs = lhs,
@@ -375,7 +391,7 @@ return {
         add_commands(vim.api.nvim_buf_get_commands(0, { builtin = false }))
 
         if vim.tbl_isempty(entries) then
-          vim.notify("No <leader> mappings found", vim.log.levels.WARN)
+          vim.notify("No actions found", vim.log.levels.WARN)
           return
         end
 
@@ -410,18 +426,18 @@ return {
         local displayer = entry_display.create({
           separator = "  ",
           items = {
-            { width = 40 },
+            { width = 38 },
             { width = 18 },
             { remaining = true },
           },
         })
 
         local function make_display(entry)
-          return displayer({ entry.command, entry.keybinding, entry.description })
+          return displayer({ entry.description ~= "" and entry.description or entry.command, entry.keybinding, entry.command })
         end
 
         local opts = {
-          prompt_title = "Command palette (<leader>)",
+          prompt_title = "Actions",
           finder = require("telescope.finders").new_table({
             results = entries,
             entry_maker = function(entry)
@@ -582,8 +598,7 @@ return {
       end
 
       local function pick_theme_with_persist()
-        local colors = vim.fn.getcompletion("", "color")
-        table.sort(colors)
+        local colors = vim.deepcopy(theme.available)
 
         local before_background = vim.o.background
         local before_color = vim.g.colors_name
@@ -670,11 +685,12 @@ return {
         nargs = 1,
         desc = "Find files by extension (example: FindFilesByExt lua)",
       })
+      vim.api.nvim_create_user_command("ProjectFiles", find_files_ignored, { desc = "Find files from project root" })
+      vim.api.nvim_create_user_command("ProjectGrep", live_grep_ignored, { desc = "Live grep from project root" })
 
-      vim.keymap.set("n", "<leader>/", live_grep_ignored, { desc = "Live grep" })
+      vim.keymap.set("n", "<leader>/", "<cmd>ProjectGrep<CR>", { desc = "Live grep" })
       vim.keymap.set("n", "<leader>?", command_palette, { desc = "Command palette" })
-      vim.keymap.set("n", "<leader>ff", find_files_ignored, { desc = "Find files" })
-      vim.keymap.set("n", "<leader>fF", find_files_ignored, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>ff", "<cmd>ProjectFiles<CR>", { desc = "Find files" })
       vim.keymap.set("n", "<leader>fE", function()
         vim.ui.input({ prompt = "Extension: " }, function(input)
           if input then
@@ -682,13 +698,9 @@ return {
           end
         end)
       end, { desc = "Find files by extension" })
-      vim.keymap.set("n", "<leader>fg", live_grep_ignored, { desc = "Grep files" })
-      vim.keymap.set("n", "<leader>fG", live_grep_ignored, { desc = "Grep files" })
-      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Buffers" })
       vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Recent files" })
       vim.keymap.set("n", "<leader>h/", help_live_grep, { desc = "Help grep" })
       vim.keymap.set("n", "<leader>hh", builtin.help_tags, { desc = "Help tags" })
-      vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Diagnostics" })
       vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Document symbols" })
       vim.keymap.set("n", "<leader>fS", workspace_symbols, { desc = "Workspace symbols" })
       vim.keymap.set("n", "<leader>fk", document_symbols_with_type_filter, { desc = "Document symbols by type" })

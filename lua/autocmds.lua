@@ -1,4 +1,5 @@
 local api = vim.api
+local group = api.nvim_create_augroup("UserAutocmds", { clear = true })
 
 local function leave_snippet()
   local ok, luasnip = pcall(require, "luasnip")
@@ -20,30 +21,12 @@ local function leave_snippet()
 end
 
 api.nvim_create_autocmd("ModeChanged", {
+  group = group,
   callback = leave_snippet,
 })
 
-api.nvim_create_autocmd("FileType", {
-  pattern = { "help", "man" },
-  command = "wincmd L",
-})
-
-api.nvim_create_autocmd("BufWritePre", {
-  callback = function()
-    local dir = vim.fn.expand("<afile>:p:h")
-    if vim.fn.isdirectory(dir) == 0 then
-      vim.fn.mkdir(dir, "p")
-    end
-  end,
-})
-
-api.nvim_create_autocmd("DiagnosticChanged", {
-  callback = function()
-    vim.diagnostic.setloclist({ open = false })
-  end,
-})
-
 api.nvim_create_autocmd("VimResized", {
+  group = group,
   callback = function()
     vim.cmd("wincmd =")
   end,

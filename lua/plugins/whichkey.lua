@@ -161,13 +161,12 @@ return {
       { "<leader>h", group = "help" },
       { "<leader>j", group = "jump" },
       { "<leader>m", group = "manage" },
-      { "<leader>e", group = "explorer" },
       { "<leader>y", group = "yazi" },
       { "<leader>w", group = "window" },
       { "<leader>d", group = "diagnostics" },
       { "<leader>g", group = "git" },
       { "<leader>t", group = "toggle" },
-      { "<leader>r", group = "refactor" },
+      { "<leader>r", group = "code" },
     })
   end,
   keys = {

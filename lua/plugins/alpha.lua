@@ -75,8 +75,8 @@ return {
     }
 
     local work_buttons = {
-      dashboard.button("f", "[f] files", ":Telescope find_files<CR>"),
-      dashboard.button("g", "[g] grep", ":Telescope live_grep<CR>"),
+      dashboard.button("f", "[f] files", ":ProjectFiles<CR>"),
+      dashboard.button("g", "[g] grep", ":ProjectGrep<CR>"),
       dashboard.button("p", "[p] projects", ":Telescope projects<CR>"),
       dashboard.button("r", "[r] recents", ":Telescope oldfiles<CR>"),
     }
@@ -106,8 +106,8 @@ return {
 
     local tool_buttons = {
       dashboard.button("y", "[y] yazi", ":Yazi cwd<CR>"),
-      dashboard.button("l", "[l] lazy", ":Lazy<CR>"),
-      dashboard.button("j", "[j] marks", ":HarpoonQuickMenu<CR>"),
+      dashboard.button("j", "[j] bookmarks", ":Telescope lspmark<CR>"),
+      dashboard.button("c", "[c] reload config", ":ConfigReload<CR>"),
       dashboard.button("q", "[q] quit", ":qa<CR>"),
     }
 
@@ -118,7 +118,7 @@ return {
 
     local hints = {
       type = "text",
-      val = "[f] files  [g] grep  [p] projects  [r] recents  [s] status  [b] branches  [j] marks",
+      val = "[f] files  [g] grep  [p] projects  [r] recents  [s] status  [b] branches  [j] bookmarks",
       opts = {
         position = "center",
         hl = "Comment",

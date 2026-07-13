@@ -19,7 +19,6 @@ return {
   },
   keys = {
     { "<leader>y", "<cmd>Yazi toggle<CR>", desc = "Toggle Yazi in cwd" },
-    { "<leader>fy", "<cmd>Yazi toggle<CR>", desc = "Toggle Yazi in cwd" },
     { "<leader>yc", "<cmd>Yazi<CR>", desc = "Open Yazi (buffer path)" },
   },
 }

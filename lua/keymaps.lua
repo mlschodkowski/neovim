@@ -156,17 +156,6 @@ local function goto_symbol(direction)
   vim.api.nvim_win_set_cursor(0, { last.lnum, last.col })
 end
 
-local function push_jump()
-  vim.cmd("normal! m'")
-end
-
-local function with_jump(fn)
-  return function()
-    push_jump()
-    fn()
-  end
-end
-
 local function is_visual_mode()
   local mode = vim.fn.mode()
   return mode == "v" or mode == "V" or mode == "\22"
@@ -300,14 +289,6 @@ local function expand_symbol_selection()
   apply_visual_range(target)
 end
 
-local function collapse_selection()
-  if is_visual_mode() then
-    vim.cmd("normal! <Esc>")
-    return
-  end
-  notify_quiet("No active selection to collapse")
-end
-
 local function select_entire_buffer()
   vim.cmd("normal! gg0vG$")
 end
@@ -355,8 +336,7 @@ km("n", "<C-d>", "<C-d>zz")
 km("n", "<C-u>", "<C-u>zz")
 km("n", "<C-f>", "<C-f>zz")
 km("n", "<C-b>", "<C-b>zz")
-km("n", "<C-s>", push_jump, { desc = "Save position to jumplist" })
-km("n", "<leader>jm", push_jump, { desc = "Save position to jumplist" })
+km({ "n", "i", "v" }, "<C-s>", "<cmd>write<CR>", { desc = "Save file" })
 km("n", "<C-o>", "<C-o>", { desc = "Jumplist back", noremap = true })
 km("n", "<C-i>", "<C-i>", { desc = "Jumplist forward", noremap = true })
 km("n", "Y", "yy")
@@ -373,10 +353,7 @@ km("x", "<lt>", "<gv", { desc = "Indent left (keep selection)" })
 km("x", ">", ">gv", { desc = "Indent right (keep selection)" })
 km("n", "n", "nzzzv", { desc = "Next search match" })
 km("n", "N", "Nzzzv", { desc = "Previous search match" })
-km("n", ".", ";", { desc = "Repeat last movement" })
 km({ "n", "x" }, "s", expand_symbol_selection, { desc = "Helix-style selection" })
-km("n", ";", collapse_selection, { desc = "Collapse selection" })
-km("x", ";", "<Esc>", { desc = "Collapse selection", noremap = true, silent = true, nowait = true })
 km({ "n", "x" }, "%", select_entire_buffer, { desc = "Select whole buffer" })
 km("n", "/", "/", { desc = "Search forward" })
 km("n", "?", "?", { desc = "Search backward" })
@@ -406,10 +383,8 @@ km("x", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 -- buffers
 km("n", "<leader>bb", "<cmd>Telescope buffers<CR>", { desc = "List buffers" })
 km("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
-km("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
-km("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-km("n", "gn", "<cmd>bnext<CR>", { desc = "Go next buffer" })
-km("n", "gp", "<cmd>bprevious<CR>", { desc = "Go previous buffer" })
+km("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+km("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
 km("n", "<leader>ml", "<cmd>Lazy<CR>", { desc = "Open Lazy" })
 km("n", "<leader>mm", "<cmd>Mason<CR>", { desc = "Open Mason" })
 km("n", "<leader>mu", "<cmd>MasonUpdate<CR>", { desc = "Update Mason registry" })
@@ -439,39 +414,34 @@ km("n", "<leader>tb", function()
 end, { desc = "Toggle inline blame" })
 
 -- LSP mappings
+for _, lhs in ipairs({ "grr", "gri" }) do
+  pcall(vim.keymap.del, "n", lhs)
+end
+
 km("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
-km("n", "gh", vim.lsp.buf.hover, { desc = "Hover documentation" })
-km("n", "gd", with_jump(function()
+km("n", "gd", function()
   require("telescope.builtin").lsp_definitions()
-end), { desc = "Go to definition" })
-km("n", "gD", with_jump(function()
+end, { desc = "Go to definition" })
+km("n", "gD", function()
   require("telescope.builtin").lsp_declarations()
-end), { desc = "Go to declaration" })
+end, { desc = "Go to declaration" })
 km("n", "gO", vim.lsp.buf.document_symbol, { desc = "Document symbols" })
-km("n", "gr", with_jump(function()
+km("n", "gr", function()
   require("telescope.builtin").lsp_references({ include_declaration = false })
-end), { desc = "References" })
-km("n", "gi", with_jump(function()
+end, { desc = "References" })
+km("n", "gi", function()
   require("telescope.builtin").lsp_implementations()
-end), { desc = "Implementations" })
-km("n", "grr", with_jump(function()
-  require("telescope.builtin").lsp_references({ include_declaration = false })
-end), { desc = "LSP references" })
-km("n", "gri", with_jump(function()
-  require("telescope.builtin").lsp_implementations()
-end), { desc = "LSP implementations" })
+end, { desc = "Implementations" })
 km("n", "grn", vim.lsp.buf.rename, { desc = "LSP rename" })
 km({ "n", "v" }, "gra", vim.lsp.buf.code_action, { desc = "LSP code actions" })
 
--- Unified LSP/refactor leader mappings.
-km({ "n", "v" }, "<leader>ra", vim.lsp.buf.code_action, { desc = "Code action" })
-km("n", "<leader>rr", vim.lsp.buf.rename, { desc = "Rename symbol" })
 km("n", "<leader>rf", format_buffer, { desc = "Format buffer" })
 
 -- Diagnostics helpers
-km("n", "<leader>de", vim.diagnostic.open_float, { desc = "Line diagnostics" })
-km("n", "<leader>dc", "<cmd>CursorDiagnostics<CR>", { desc = "Cursor diagnostics" })
-km("n", "<leader>dh", "<cmd>HoverDoc<CR>", { desc = "Hover docs under cursor" })
+km("n", "<leader>dd", function()
+  require("telescope.builtin").diagnostics({ bufnr = 0 })
+end, { desc = "Buffer diagnostics" })
+km("n", "<leader>do", vim.diagnostic.open_float, { desc = "Open cursor diagnostics" })
 km("n", "<leader>dq", vim.diagnostic.setqflist, { desc = "Diagnostics to quickfix" })
 
 -- Next/previous navigation targets

@@ -4,6 +4,16 @@ local state_file = vim.fn.stdpath("state") .. "/colorscheme.txt"
 local aliases = {
   ["dark-af"] = "dark_af",
   ["dark af"] = "dark_af",
+  ["github dark dimmed"] = "github_dark_dimmed",
+}
+
+M.available = {
+  "personal",
+  "dark_af",
+  "doom-one",
+  "kanagawa",
+  "golden-gate",
+  "github_dark_dimmed",
 }
 
 local function normalize_name(name)

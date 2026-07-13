@@ -138,7 +138,9 @@ end
 
 -- sets up custom colors dependent on themes
 function M.setup_colorscheme_overrides()
+  local group = vim.api.nvim_create_augroup("ColorschemeOverrides", { clear = true })
   vim.api.nvim_create_autocmd("ColorScheme", {
+    group = group,
     -- so it's fired when used in other autocmds
     nested = true,
     pattern = "*",
@@ -165,7 +167,7 @@ function M.setup_colorscheme_overrides()
   })
 
   -- remove italics from zenburn and the such
-  local grpid = vim.api.nvim_create_augroup('custom_highlights', {})
+  local grpid = vim.api.nvim_create_augroup('custom_highlights', { clear = true })
   vim.api.nvim_create_autocmd('ColorScheme', {
     group = grpid,
     pattern = 'zen*',

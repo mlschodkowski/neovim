@@ -4,11 +4,6 @@ local utils = require("utils")
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- stop annoying deprecation errors that i cant control
--- because i dont have access to the plugins that use
--- the deprecated functions
-vim.deprecate = function() end
-
 require("options")
 require("keymaps")
 require("custom_filetypes")
@@ -16,7 +11,7 @@ require("lazynvim")
 require("autocmds")
 
 utils.color_overrides.setup_colorscheme_overrides()
-utils.theme.apply_saved_or_default("dark_af")
+utils.theme.apply_saved_or_default("personal")
 
 utils.fix_telescope_parens_win()
 utils.dashboard.setup_dashboard_image_colors()
