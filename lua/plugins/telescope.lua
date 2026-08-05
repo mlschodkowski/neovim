@@ -120,12 +120,14 @@ return {
 
       -- telescope setup
       local builtin = require("telescope.builtin")
-      local theme = require("utils.theme")
       local action_state = require("telescope.actions.state")
       local entry_display = require("telescope.pickers.entry_display")
-      local make_entry = require("telescope.make_entry")
       local sorters = require("telescope.sorters")
-      local telescope_themes = require("telescope.themes")
+      local conf = require("telescope.config").values
+      local finders = require("telescope.finders")
+      local make_entry = require("telescope.make_entry")
+      local pickers = require("telescope.pickers")
+      local channel = require("plenary.async.control").channel
       local common_ignore_globs = {
         "!.git/*",
         "!node_modules/*",
@@ -550,6 +552,7 @@ return {
 
       local function workspace_symbols(opts)
         opts = opts or {}
+        opts.bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
         local supports_workspace_symbols = false
         for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
           if client.supports_method("workspace/symbol") then
@@ -563,18 +566,39 @@ return {
           return
         end
 
-        if builtin.lsp_dynamic_workspace_symbols then
-          builtin.lsp_dynamic_workspace_symbols(opts)
-          return
+        local cancel = function() end
+        local function request_symbols(prompt)
+          local query = prompt:gsub("^:%S+:%s*", "")
+          local tx, rx = channel.oneshot()
+          cancel()
+          _, cancel = vim.lsp.buf_request(opts.bufnr, "workspace/symbol", { query = query }, tx)
+
+          local err, result = rx()
+          assert(not err, err)
+          return vim.lsp.util.symbols_to_items(result or {}, opts.bufnr) or {}
         end
 
-        vim.ui.input({ prompt = "Workspace symbol query: " }, function(input)
-          if not input or input == "" then
-            return
+        local sorter = conf.prefilter_sorter({
+          tag = "symbol_type",
+          sorter = conf.generic_sorter(opts),
+        })
+        for _, kind in pairs(vim.lsp.protocol.SymbolKind) do
+          if type(kind) == "string" then
+            sorter.tags[kind] = true
           end
-          local query_opts = vim.tbl_deep_extend("force", {}, opts, { query = input })
-          builtin.lsp_workspace_symbols(query_opts)
-        end)
+        end
+
+        pickers
+          .new(opts, {
+            prompt_title = "LSP Dynamic Workspace Symbols",
+            finder = finders.new_dynamic({
+              entry_maker = opts.entry_maker or make_entry.gen_from_lsp_symbols(opts),
+              fn = request_symbols,
+            }),
+            previewer = conf.qflist_previewer(opts),
+            sorter = sorter,
+          })
+          :find()
       end
 
       local function document_symbols_with_type_filter()
@@ -595,88 +619,6 @@ return {
           end
           workspace_symbols(opts)
         end)
-      end
-
-      local function pick_theme_with_persist()
-        local colors = vim.deepcopy(theme.available)
-
-        local before_background = vim.o.background
-        local before_color = vim.g.colors_name
-        local need_restore = true
-
-        local function apply_theme(name)
-          vim.o.background = "dark"
-          vim.cmd("hi clear")
-          vim.cmd("syntax reset")
-          local ok, err = pcall(vim.cmd.colorscheme, name)
-          if not ok then
-            vim.notify("colorscheme '" .. name .. "' failed: " .. tostring(err), vim.log.levels.WARN)
-          end
-          vim.cmd("redraw!")
-        end
-
-        local function preview_selection()
-          local entry = action_state.get_selected_entry()
-          if entry and entry.value then
-            apply_theme(entry.value)
-          end
-        end
-
-        require("telescope.pickers")
-          .new(telescope_themes.get_dropdown({ previewer = false, layout_config = { width = 0.45, height = 0.75 } }), {
-            prompt_title = "Colorschemes",
-            finder = require("telescope.finders").new_table({
-              results = colors,
-              entry_maker = make_entry.gen_from_string({}),
-            }),
-            sorter = sorters.get_generic_fuzzy_sorter({}),
-            on_complete = { preview_selection },
-            attach_mappings = function(prompt_bufnr, map)
-              local function restore_and_close()
-                actions.close(prompt_bufnr)
-                if need_restore and before_color then
-                  vim.o.background = before_background
-                  pcall(vim.cmd.colorscheme, before_color)
-                end
-              end
-
-              local function confirm()
-                local entry = action_state.get_selected_entry()
-                need_restore = false
-                actions.close(prompt_bufnr)
-                if entry and entry.value then
-                  apply_theme(entry.value)
-                  theme.save(entry.value)
-                end
-              end
-
-              local function move_next()
-                actions.move_selection_next(prompt_bufnr)
-                preview_selection()
-              end
-
-              local function move_prev()
-                actions.move_selection_previous(prompt_bufnr)
-                preview_selection()
-              end
-
-              map("i", "<CR>", confirm)
-              map("n", "<CR>", confirm)
-              map("i", "<Esc>", restore_and_close)
-              map("n", "<Esc>", restore_and_close)
-              map("i", "<C-c>", restore_and_close)
-              map("i", "<C-n>", move_next)
-              map("i", "<Down>", move_next)
-              map("n", "j", move_next)
-              map("n", "<Down>", move_next)
-              map("i", "<C-p>", move_prev)
-              map("i", "<Up>", move_prev)
-              map("n", "k", move_prev)
-              map("n", "<Up>", move_prev)
-              return true
-            end,
-          })
-          :find()
       end
 
       vim.api.nvim_create_user_command("FindFilesByExt", function(cmd_opts)
@@ -706,7 +648,9 @@ return {
       vim.keymap.set("n", "<leader>fk", document_symbols_with_type_filter, { desc = "Document symbols by type" })
       vim.keymap.set("n", "<leader>fK", workspace_symbols_with_type_filter, { desc = "Workspace symbols by type" })
       vim.keymap.set("n", "<leader>f.", builtin.builtin, { desc = "Pickers" })
-      vim.keymap.set("n", "<leader>ft", pick_theme_with_persist, { desc = "Themes" })
+      vim.keymap.set("n", "<leader>ft", function()
+        require("huez.pickers").themes()
+      end, { desc = "Themes" })
     end,
   },
   {

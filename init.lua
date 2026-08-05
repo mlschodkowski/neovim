@@ -11,7 +11,8 @@ require("lazynvim")
 require("autocmds")
 
 utils.color_overrides.setup_colorscheme_overrides()
-utils.theme.apply_saved_or_default("personal")
+vim.opt.clipboard = "unnamedplus"
+vim.g.clipboard = "osc52"
 
 utils.fix_telescope_parens_win()
 utils.dashboard.setup_dashboard_image_colors()

@@ -2,7 +2,6 @@ local utils = {}
 
 utils.color_overrides = require("utils.color_overrides")
 utils.dashboard = require("utils.dashboard")
-utils.theme = require("utils.theme")
 
 --- get the operating system name
 --- "windows", "mac", "linux"

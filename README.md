@@ -64,14 +64,26 @@ Bookmarks use `lspmark.nvim`: they are project-scoped, persistent, and searchabl
 
 ## Themes
 
-The theme picker is intentionally limited to:
+The Huez-powered theme picker is intentionally limited to:
 
-- `personal` — default, opaque blue-black surface
-- `dark_af`
-- `doom-one`
-- `kanagawa`
-- `golden-gate`
-- `github_dark_dimmed`
+- `personal` — your default blue-black surface
+- `sora` — ethereal cyan, cool silver, and deep OLED blacks
+- `claude-dark` — Claude Code-inspired warm charcoal theme with orange emphasis
+- `golden_gate` — opaque warm dusk theme shared with Ghostty and Helix
+- `oxocarbon` — IBM Carbon-inspired dark theme
+- `kanagawa-wave-reduced`, `kanagawa-dragon-reduced` — reduced-palette Kanagawa variants
+- `zenwritten` — almost entirely neutral syntax coloring
+- `github-monochrome-dark` — restrained monochrome dark theme
+- `nightfox`, `dayfox`, `dawnfox`, `duskfox`, `nordfox`, `terafox`,
+  `carbonfox` — Nightfox's complete theme family
+- `nord`, `nord-darker`, `nord-night`, `nordic` — classic Nord, its darker-background variant, Helix Nord Night, and Nordic's darker, warmer variant
+- `habamax`, `vim` — bundled Neovim and Vim baselines
+
+Open it with `<leader>ft`. Move with `j`/`k` to preview, press Enter to keep a
+theme, or Escape to restore the previously saved theme.
+
+Use `<leader>fT` for Theme Hub when you want to discover or install a new
+theme. It does not replace Huez's saved selection or expand the daily picker.
 
 `personal` is the palette source for the matching Ghostty and tmux themes.
 

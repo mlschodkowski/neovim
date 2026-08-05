@@ -94,7 +94,3 @@ end, { desc = "Enable autoformat on save" })
 vim.api.nvim_create_user_command("ToggleInlineBlame", function()
   require("gitsigns").toggle_current_line_blame()
 end, { desc = "Toggle inline git blame" })
-
-vim.api.nvim_create_user_command("ThemeDarkAf", function()
-  vim.cmd("DarkAf")
-end, { desc = "Set colorscheme to dark_af" })

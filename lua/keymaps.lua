@@ -393,7 +393,6 @@ km("n", "<leader>ms", "<cmd>Lazy sync<CR>", { desc = "Sync plugins" })
 -- Insert mode completion
 km("i", "<C-f>", "<C-x><C-f>", { noremap = true, silent = true })
 km("i", "<C-n>", "<C-x><C-n>", { noremap = true, silent = true })
-km("i", "<C-l>", "<C-x><C-l>", { noremap = true, silent = true })
 
 -- Toggle helpers
 km("n", "<leader>ts", "<cmd>setlocal spell! spelllang=en_us<CR>", { desc = "Toggle spellcheck" })
@@ -435,7 +434,7 @@ end, { desc = "Implementations" })
 km("n", "grn", vim.lsp.buf.rename, { desc = "LSP rename" })
 km({ "n", "v" }, "gra", vim.lsp.buf.code_action, { desc = "LSP code actions" })
 
-km("n", "<leader>rf", format_buffer, { desc = "Format buffer" })
+km("n", "<leader>=", format_buffer, { desc = "Format buffer" })
 
 -- Diagnostics helpers
 km("n", "<leader>dd", function()

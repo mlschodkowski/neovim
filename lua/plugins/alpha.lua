@@ -1,7 +1,11 @@
 return {
   "goolord/alpha-nvim",
+  lazy = false,
   dependencies = {
     "echasnovski/mini.icons",
+  },
+  keys = {
+    { "<leader>aa", "<cmd>Alpha<CR>", desc = "Open dashboard" },
   },
   config = function()
     local alpha = require("alpha")
@@ -93,6 +97,7 @@ return {
     local git_buttons = {
       dashboard.button("s", "[s] status", ":Telescope git_status<CR>"),
       dashboard.button("b", "[b] branches", ":Telescope git_branches<CR>"),
+      dashboard.button("l", "[l] lazygit", ":LazyGit<CR>"),
     }
 
     local tools_title = {
@@ -106,7 +111,7 @@ return {
 
     local tool_buttons = {
       dashboard.button("y", "[y] yazi", ":Yazi cwd<CR>"),
-      dashboard.button("j", "[j] bookmarks", ":Telescope lspmark<CR>"),
+      dashboard.button("j", "[j] bookmarks", "<leader>jb"),
       dashboard.button("c", "[c] reload config", ":ConfigReload<CR>"),
       dashboard.button("q", "[q] quit", ":qa<CR>"),
     }
@@ -118,7 +123,7 @@ return {
 
     local hints = {
       type = "text",
-      val = "[f] files  [g] grep  [p] projects  [r] recents  [s] status  [b] branches  [j] bookmarks",
+      val = "[f] files  [g] grep  [p] projects  [r] recents  [s] status  [b] branches  [l] lazygit  [j] bookmarks",
       opts = {
         position = "center",
         hl = "Comment",
