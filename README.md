@@ -1,6 +1,6 @@
 # Personal Neovim
 
-A focused daily-driver configuration: Neovim’s modal editing with a small Helix-style selection layer, a searchable action surface, and a quiet opaque Personal theme.
+A focused daily-driver configuration: Neovim’s modal editing with a small Helix-style selection layer, a searchable action surface, and the dark Mono Glow theme.
 
 ## Requirements
 
@@ -78,6 +78,7 @@ The Huez-powered theme picker is intentionally limited to:
   `carbonfox` — Nightfox's complete theme family
 - `nord`, `nord-darker`, `nord-night`, `nordic` — classic Nord, its darker-background variant, Helix Nord Night, and Nordic's darker, warmer variant
 - `habamax`, `vim` — bundled Neovim and Vim baselines
+- `monoglow-z`, `monoglow-lack`, `monoglow-void` — Mono Glow's dark styles
 
 Open it with `<leader>ft`. Move with `j`/`k` to preview, press Enter to keep a
 theme, or Escape to restore the previously saved theme.
@@ -85,7 +86,7 @@ theme, or Escape to restore the previously saved theme.
 Use `<leader>fT` for Theme Hub when you want to discover or install a new
 theme. It does not replace Huez's saved selection or expand the daily picker.
 
-`personal` is the palette source for the matching Ghostty and tmux themes.
+`monoglow-z` is the active palette for the matching Ghostty and tmux themes.
 
 ## Commands
 

@@ -34,6 +34,11 @@ local themes = {
 	"iceberg",
 	"ashen",
 	"carvion",
+	"monoglow",
+	"monoglow-z",
+	"monoglow-lack",
+	"monoglow-void",
+	"mint-signal",
 }
 
 return {
@@ -124,6 +129,16 @@ return {
 		end,
 	},
 	{
+		"wnkz/monoglow.nvim",
+		lazy = false,
+		priority = 999,
+		opts = {},
+		config = function(_, opts)
+			require("monoglow").load(opts)
+			vim.cmd.colorscheme("mint-signal")
+		end,
+	},
+	{
 		"vague2k/huez.nvim",
 		branch = "stable",
 		event = "UIEnter",
@@ -142,7 +157,7 @@ return {
 
 			require("huez").setup({
 				background = "dark",
-				fallback = "personal",
+				fallback = "mint-signal",
 				exclude = excluded,
 				suppress_messages = true,
 				picker = {
