@@ -1,6 +1,6 @@
 -- Mint Signal: mostly monochrome with Mono Glow's mint accent.
 local c = {
-  bg = "#0d0d0d",
+  bg = "#111111",
   panel = "#191919",
   surface = "#2a2a2a",
   hover = "#353535",
@@ -83,21 +83,26 @@ end
 for _, group in ipairs({ "Type", "Structure" }) do
   hi(group, { fg = c.steel_slate })
 end
-for _, group in ipairs({ "Function", "Method", "Special", "Underlined", "PreProc", "Include", "Define", "Macro" }) do
+for _, group in ipairs({ "Function", "Method" }) do
   hi(group, { fg = c.fg })
+end
+for _, group in ipairs({ "Special", "Underlined", "PreProc", "Include", "Define", "Macro" }) do
+  hi(group, { fg = c.muted })
 end
 hi("Tag", { fg = c.steel_slate })
 hi("Statement", { fg = c.muted, bold = true })
 hi("Keyword", { fg = c.muted, bold = true })
 hi("Delimiter", { fg = c.muted })
 hi("Operator", { fg = c.mint })
-hi("String", { fg = c.muted })
-hi("Type", { fg = c.muted })
+hi("String", { fg = c.steel_slate })
 hi("@function", { fg = c.fg })
 hi("@function.call", { fg = c.fg })
 hi("@keyword", { fg = c.muted, bold = true })
 hi("@operator", { fg = c.mint })
-hi("@string", { fg = c.muted })
+hi("@string", { fg = c.steel_slate })
+hi("@string.escape", { fg = c.mint_soft })
+hi("@string.special", { fg = c.steel_slate })
+hi("@string.regex", { fg = c.mint_soft })
 hi("@type", { fg = c.steel_slate })
 hi("@type.builtin", { fg = c.steel_slate })
 hi("@constructor", { fg = c.steel_slate })
